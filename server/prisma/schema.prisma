@@ -1,0 +1,141 @@
+// Prisma Schema for Trello Clone Application
+// Database: MySQL with type-safe client generation
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// Board model - Main container for lists and cards
+model Board {
+  id              Int      @id @default(autoincrement())
+  title           String   @db.VarChar(255)
+  backgroundColor String   @default("#0079bf") @map("background_color") @db.VarChar(7)
+  createdAt       DateTime @default(now()) @map("created_at")
+  
+  lists           List[]
+  labels          Label[]
+  
+  @@map("boards")
+}
+
+// List model - Column containing cards
+model List {
+  id        Int      @id @default(autoincrement())
+  boardId   Int      @map("board_id")
+  title     String   @db.VarChar(255)
+  position  Int
+  createdAt DateTime @default(now()) @map("created_at")
+  
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards     Card[]
+  
+  @@map("lists")
+  @@index([boardId])
+}
+
+// Card model - Individual task card
+model Card {
+  id          Int       @id @default(autoincrement())
+  listId      Int       @map("list_id")
+  title       String    @db.VarChar(255)
+  description String?   @db.Text
+  position    Int
+  dueDate     DateTime? @map("due_date")
+  archived    Boolean   @default(false)
+  createdAt   DateTime  @default(now()) @map("created_at")
+  
+  list        List            @relation(fields: [listId], references: [id], onDelete: Cascade)
+  labels      CardLabel[]
+  members     CardMember[]
+  checklists  Checklist[]
+  
+  @@map("cards")
+  @@index([listId])
+}
+
+// Label model - Colored tags for categorization
+model Label {
+  id      Int    @id @default(autoincrement())
+  boardId Int    @map("board_id")
+  name    String @db.VarChar(50)
+  color   String @db.VarChar(7)
+  
+  board   Board       @relation(fields: [boardId], references: [id], onDelete: Cascade)
+  cards   CardLabel[]
+  
+  @@map("labels")
+  @@index([boardId])
+}
+
+// Junction table for Card-Label many-to-many relationship
+model CardLabel {
+  cardId  Int   @map("card_id")
+  labelId Int   @map("label_id")
+  
+  card    Card  @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  label   Label @relation(fields: [labelId], references: [id], onDelete: Cascade)
+  
+  @@id([cardId, labelId])
+  @@map("card_labels")
+  @@index([cardId])
+  @@index([labelId])
+}
+
+// Member model - Team members for card assignment
+model Member {
+  id          Int    @id @default(autoincrement())
+  name        String @db.VarChar(100)
+  avatarColor String @map("avatar_color") @db.VarChar(7)
+  initials    String @db.VarChar(3)
+  
+  cards       CardMember[]
+  
+  @@map("members")
+}
+
+// Junction table for Card-Member many-to-many relationship
+model CardMember {
+  cardId   Int    @map("card_id")
+  memberId Int    @map("member_id")
+  
+  card     Card   @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  member   Member @relation(fields: [memberId], references: [id], onDelete: Cascade)
+  
+  @@id([cardId, memberId])
+  @@map("card_members")
+  @@index([cardId])
+  @@index([memberId])
+}
+
+// Checklist model - Task checklist for cards
+model Checklist {
+  id       Int    @id @default(autoincrement())
+  cardId   Int    @map("card_id")
+  title    String @db.VarChar(255)
+  position Int
+  
+  card     Card            @relation(fields: [cardId], references: [id], onDelete: Cascade)
+  items    ChecklistItem[]
+  
+  @@map("checklists")
+  @@index([cardId])
+}
+
+// ChecklistItem model - Individual item in a checklist
+model ChecklistItem {
+  id          Int       @id @default(autoincrement())
+  checklistId Int       @map("checklist_id")
+  text        String    @db.VarChar(255)
+  completed   Boolean   @default(false)
+  position    Int
+  
+  checklist   Checklist @relation(fields: [checklistId], references: [id], onDelete: Cascade)
+  
+  @@map("checklist_items")
+  @@index([checklistId])
+}

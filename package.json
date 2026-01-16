@@ -1,0 +1,21 @@
+{
+    "name": "trello-clone",
+    "version": "1.0.0",
+    "description": "Full-stack Kanban project management application",
+    "scripts": {
+        "setup": "powershell -ExecutionPolicy Bypass -File ./setup.ps1",
+        "dev": "concurrently \"cd server && npm run dev\" \"cd client && npm run dev\"",
+        "server": "cd server && npm run dev",
+        "client": "cd client && npm run dev"
+    },
+    "keywords": [
+        "trello",
+        "kanban",
+        "project-management",
+        "react",
+        "nodejs",
+        "prisma"
+    ],
+    "author": "",
+    "license": "MIT"
+}
