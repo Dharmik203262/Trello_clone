@@ -2,10 +2,7 @@
 
 A full-featured Kanban-style project management web application that replicates Trello's design and user experience. Built with modern web technologies including React.js, Node.js, Express, MySQL, and Prisma ORM.
 
-![Trello Clone](https://img.shields.io/badge/Status-Complete-success)
-![React](https://img.shields.io/badge/React-18.2-blue)
-![Node](https://img.shields.io/badge/Node.js-Express-green)
-![Prisma](https://img.shields.io/badge/Database-MySQL%20%2B%20Prisma-orange)
+
 
 ## 🚀 Features
 
@@ -304,14 +301,5 @@ Designed with Prisma ORM:
 - **Comments**: Documented complex logic and API endpoints
 - **Consistent Styling**: Tailwind utilities for maintainable CSS
 
-## 👥 Team
 
-Developed as a full-stack project management application showcasing modern web development practices.
 
-## 📄 License
-
-MIT License - Feel free to use this project for learning and development.
-
----
-
-**Note**: This is an educational project demonstrating full-stack development skills. It replicates Trello's UI/UX for learning purposes only.
